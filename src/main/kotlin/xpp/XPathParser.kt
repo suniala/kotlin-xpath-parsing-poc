@@ -9,7 +9,7 @@ import javax.xml.xpath.XPathExpression
 import javax.xml.xpath.XPathFactory
 
 
-typealias Builder<T> = (XPathGetters) -> T
+typealias Builder<T> = XPathGetters.() -> T
 
 interface XPathGetters {
     fun <T> list(expression: String, builder: Builder<T>): List<T>
@@ -23,7 +23,7 @@ class XPathDocGetters(private val doc: Node) : XPathGetters {
         val nodes = compiledExpression.evaluate(doc, XPathConstants.NODESET) as NodeList
         return (0 until nodes.length).map {
             val item = nodes.item(it)
-            builder(XPathDocGetters(item))
+            XPathDocGetters(item).builder()
         }
     }
 
@@ -60,7 +60,6 @@ class XPathParser<T>(private val builder: Builder<T>) {
         val docBuilder = factory.newDocumentBuilder()
         val doc = docBuilder.parse(xml)
 
-        val g = XPathDocGetters(doc)
-        return builder(g)
+        return XPathDocGetters(doc).builder()
     }
 }

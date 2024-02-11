@@ -8,15 +8,15 @@ class XPathParserTest {
     data class Relative(val name: String, val age: Int)
 
     @Test
-    fun simpleBuilder() {
-        val builder: Builder<Person> = { x ->
+    fun nestedBuilder() {
+        val builder: Builder<Person> = {
             Person(
-                name = x.string("/mydoc/name/text()"),
-                age = x.int("/mydoc/age/text()"),
-                relatives = x.list("/mydoc/relatives/relative") { x2 ->
+                name = string("/mydoc/name/text()"),
+                age = int("/mydoc/age/text()"),
+                relatives = list("/mydoc/relatives/relative") {
                     Relative(
-                        name = x2.string("name/text()"),
-                        age = x2.int("age/text()")
+                        name = string("name/text()"),
+                        age = int("age/text()")
                     )
                 }
             )
